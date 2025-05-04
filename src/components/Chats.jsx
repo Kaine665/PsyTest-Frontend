@@ -26,7 +26,7 @@ const Chats = () => {
       }
       try {
         const response = await fetch(
-          `http://localhost:8001/api/chat_history/user/${account}`
+          `https://psytest-backend.onrender.com/api/chat_history/user/${account}`
         );
         const data = await response.json();
         if (data.success) {
@@ -45,7 +45,9 @@ const Chats = () => {
     const fetchPatients = async () => {
       try {
         // 尝试不同的 API 路径
-        const response = await fetch("http://localhost:8001/api/patient/all");
+        const response = await fetch(
+          "https://psytest-backend.onrender.com/api/patient/all"
+        );
         const data = await response.json();
         const dict = {};
         if (data.data) {
@@ -59,7 +61,9 @@ const Chats = () => {
 
     // 获取所有练习类型信息
     const fetchPrompts = async () => {
-      const response = await fetch("http://localhost:8001/api/prompt/all");
+      const response = await fetch(
+        "https://psytest-backend.onrender.com/api/prompt/all"
+      );
       const data = await response.json();
       const dict = {};
       if (data.data) {
@@ -73,11 +77,11 @@ const Chats = () => {
       return await Promise.all(
         chats.map(async (chat) => {
           const patientRes = await fetch(
-            `http://localhost:8001/api/patient/${chat.patient_id}`
+            `https://psytest-backend.onrender.com/api/patient/${chat.patient_id}`
           );
           const patientData = await patientRes.json();
           const promptRes = await fetch(
-            `http://localhost:8001/api/prompt/${chat.prompt_id}`
+            `https://psytest-backend.onrender.com/api/prompt/${chat.prompt_id}`
           );
           const promptData = await promptRes.json();
           return {
@@ -122,7 +126,7 @@ const Chats = () => {
         `[Frontend] Attempting to delete chat history: ${chat_history_id}`
       ); // 添加日志
       const response = await fetch(
-        "http://localhost:8001/api/chat_history/delete",
+        "https://psytest-backend.onrender.com/api/chat_history/delete",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

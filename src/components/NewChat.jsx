@@ -2,7 +2,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Header from "./Header";
 import ChatElement from "./ChatElement";
 
-// ... existing code ...
 const NewChat = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,7 +26,7 @@ const NewChat = () => {
     };
 
     // 根据这个去创建一个新的chat_history，在后端写逻辑
-    await fetch("http://localhost:8001/api/chat_history/save", {
+    await fetch("https://psytest-backend.onrender.com/api/chat_history/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

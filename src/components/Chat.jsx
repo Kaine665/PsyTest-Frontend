@@ -18,15 +18,18 @@ const Chat = () => {
   // 接收到传入参数后，将参数传给后端
   useEffect(() => {
     const loadPage = async () => {
-      const response = await fetch("http://127.0.0.1:8001/api/load_chat_page", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chat_history_id: chatHistoryId,
-        }),
-      });
+      const response = await fetch(
+        "https://psytest-backend.onrender.com/api/load_chat_page",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_history_id: chatHistoryId,
+          }),
+        }
+      );
       const data = await response.json();
       const chatHistory = data.messages;
       setMessages(chatHistory);
@@ -47,42 +50,51 @@ const Chat = () => {
 
   // 这个方法接受用户的最新输入，输出ai的最新回复。
   const fetchAiResponse = async () => {
-    const response = await fetch("http://127.0.0.1:8001/api/process_message", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_history_id: chatHistoryId,
-        inputValue: inputValue,
-      }),
-    });
+    const response = await fetch(
+      "https://psytest-backend.onrender.com/api/process_message",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_history_id: chatHistoryId,
+          inputValue: inputValue,
+        }),
+      }
+    );
     const data = await response.json();
     if (data.error) throw new Error(data.error);
     return data;
   };
 
   const fetchFeedback = async () => {
-    const response = await fetch("http://127.0.0.1:8001/api/get_feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_history_id: chatHistoryId,
-        inputValue: inputValue,
-      }),
-    });
+    const response = await fetch(
+      "https://psytest-backend.onrender.com/api/get_feedback",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_history_id: chatHistoryId,
+          inputValue: inputValue,
+        }),
+      }
+    );
     const data = await response.json();
     if (data.error) throw new Error(data.error);
     return data;
   };
 
   const postMessages = async (messagesToSend) => {
-    const response = await fetch("http://127.0.0.1:8001/api/post_messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_history_id: chatHistoryId,
-        messagesToSend: messagesToSend,
-      }),
-    });
+    const response = await fetch(
+      "https://psytest-backend.onrender.com/api/post_messages",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_history_id: chatHistoryId,
+          messagesToSend: messagesToSend,
+        }),
+      }
+    );
     const data = await response.json();
 
     return data;
