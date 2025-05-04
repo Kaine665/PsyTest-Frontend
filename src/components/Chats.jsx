@@ -4,6 +4,7 @@ import "../assets/css/chats.css";
 import Header from "./Header";
 import ChatElement from "./ChatElement";
 import { useEffect, useState } from "react";
+import CookieConsent from "./CookieConsent";
 
 const CHARACTER_COMBINATIONS = [
   { patient_id: "1", prompt_id: "3" },
@@ -169,6 +170,7 @@ const Chats = () => {
         >
           退出登录
         </button>
+        <CookieConsent />
       </div>
 
       <div id="chatElements">

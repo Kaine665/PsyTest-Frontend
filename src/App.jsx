@@ -4,10 +4,6 @@ import Chats from "./components/Chats";
 import Login from "./components/Login";
 import NewChat from "./components/NewChat";
 
-const Home = () => {
-  return <div>hello</div>;
-};
-
 function App() {
   return (
     <BrowserRouter>
