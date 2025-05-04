@@ -1,0 +1,22 @@
+#home {
+  /* 让屏幕内容居中 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  /* item间距 */
+  gap: 10px;
+
+  /* 防止塌陷 */
+  height: 100%;
+
+  /* buttons被header挤下去了，用padding补一下 */
+  padding-bottom: 30%;
+}
+
+/* 单个button的样式 */
+#home button {
+  width: 150px;
+  height: 50px;
+}
