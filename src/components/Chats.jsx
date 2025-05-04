@@ -4,13 +4,37 @@ import "../assets/css/chats.css";
 import Header from "./Header";
 import ChatElement from "./ChatElement";
 import { useEffect, useState } from "react";
-import CookieConsent from "./CookieConsent";
 
 const CHARACTER_COMBINATIONS = [
   { patient_id: "1", prompt_id: "3" },
   { patient_id: "2", prompt_id: "3" },
   { patient_id: "3", prompt_id: "3" },
 ];
+
+// 工具函数：设置 cookie
+function setCookie(name, value, days) {
+  let expires = "";
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie =
+    name + "=" + encodeURIComponent(value) + expires + "; path=/";
+}
+
+// 工具函数：读取 cookie
+function getCookie(name) {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0)
+      return decodeURIComponent(c.substring(nameEQ.length, c.length));
+  }
+  return null;
+}
 
 const Chats = () => {
   const navigate = useNavigate();
@@ -20,14 +44,18 @@ const Chats = () => {
 
   useEffect(() => {
     const fetchChats = async () => {
-      const account = localStorage.getItem("account");
+      // 这里改为用 cookie 读取账号
+      const account = getCookie("account");
       if (!account) {
         navigate("/login");
         return;
       }
       try {
         const response = await fetch(
-          `https://psytest-backend.onrender.com/api/chat_history/user/${account}`
+          `https://psytest-backend.onrender.com/api/chat_history/user/${account}`,
+          {
+            credentials: "include", // 添加此选项允许跨域请求发送Cookie
+          }
         );
         const data = await response.json();
         if (data.success) {
@@ -47,7 +75,10 @@ const Chats = () => {
       try {
         // 尝试不同的 API 路径
         const response = await fetch(
-          "https://psytest-backend.onrender.com/api/patient/all"
+          "https://psytest-backend.onrender.com/api/patient/all",
+          {
+            credentials: "include", // 添加此选项允许跨域请求发送Cookie
+          }
         );
         const data = await response.json();
         const dict = {};
@@ -63,7 +94,10 @@ const Chats = () => {
     // 获取所有练习类型信息
     const fetchPrompts = async () => {
       const response = await fetch(
-        "https://psytest-backend.onrender.com/api/prompt/all"
+        "https://psytest-backend.onrender.com/api/prompt/all",
+        {
+          credentials: "include", // 添加此选项允许跨域请求发送Cookie
+        }
       );
       const data = await response.json();
       const dict = {};
@@ -78,11 +112,17 @@ const Chats = () => {
       return await Promise.all(
         chats.map(async (chat) => {
           const patientRes = await fetch(
-            `https://psytest-backend.onrender.com/api/patient/${chat.patient_id}`
+            `https://psytest-backend.onrender.com/api/patient/${chat.patient_id}`,
+            {
+              credentials: "include", // 添加此选项允许跨域请求发送Cookie
+            }
           );
           const patientData = await patientRes.json();
           const promptRes = await fetch(
-            `https://psytest-backend.onrender.com/api/prompt/${chat.prompt_id}`
+            `https://psytest-backend.onrender.com/api/prompt/${chat.prompt_id}`,
+            {
+              credentials: "include", // 添加此选项允许跨域请求发送Cookie
+            }
           );
           const promptData = await promptRes.json();
           return {
@@ -131,6 +171,7 @@ const Chats = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "include", // 添加此选项允许跨域请求发送Cookie
           body: JSON.stringify({ chat_history_id }),
         }
       );
@@ -158,7 +199,8 @@ const Chats = () => {
         <button
           className="logout-btn"
           onClick={() => {
-            localStorage.removeItem("account");
+            // 退出时清除 cookie
+            setCookie("account", "", -1);
             navigate("/login");
           }}
           style={{
@@ -170,7 +212,6 @@ const Chats = () => {
         >
           退出登录
         </button>
-        <CookieConsent />
       </div>
 
       <div id="chatElements">

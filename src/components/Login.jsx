@@ -9,16 +9,28 @@ const Login = () => {
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
 
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie =
+      name + "=" + encodeURIComponent(value) + expires + "; path=/";
+  };
+
   const handleLogin = async () => {
     const res = await fetch("https://psytest-backend.onrender.com/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ account, password }),
     });
     const data = await res.json();
     if (data.success) {
       setMsg("登录成功！跳转中...");
-      localStorage.setItem("account", account);
+      setCookie("account", account, 7); // 用 cookie 保存账号，有效期7天
       setTimeout(() => {
         navigate("/chats");
       }, 1000);

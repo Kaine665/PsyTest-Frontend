@@ -11,10 +11,21 @@ const NewChat = () => {
     prompts = {},
   } = location.state || {};
 
+  const getCookie = (name) => {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === " ") c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0)
+        return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+  };
   const handleNewChat = async (patient_id, prompt_id) => {
     const chatHistoryId =
       Date.now().toString() + Math.floor(Math.random() * 10000);
-    const userId = localStorage.getItem("account") || ""; // 获取当前登录账号
+    const userId = getCookie("account") || ""; // 获取当前登录账号 (改为用 cookie)
     const initialContent = [];
     const payload = {
       chat_history_id: chatHistoryId,
@@ -29,6 +40,7 @@ const NewChat = () => {
     await fetch("https://psytest-backend.onrender.com/api/chat_history/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
 

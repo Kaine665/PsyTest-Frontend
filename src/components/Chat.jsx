@@ -25,6 +25,7 @@ const Chat = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include", // 添加跨域Cookie支持
           body: JSON.stringify({
             chat_history_id: chatHistoryId,
           }),
@@ -55,6 +56,7 @@ const Chat = () => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // 添加跨域Cookie支持
         body: JSON.stringify({
           chat_history_id: chatHistoryId,
           inputValue: inputValue,
@@ -72,6 +74,7 @@ const Chat = () => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // 添加跨域Cookie支持
         body: JSON.stringify({
           chat_history_id: chatHistoryId,
           inputValue: inputValue,
@@ -89,6 +92,7 @@ const Chat = () => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // 添加跨域Cookie支持
         body: JSON.stringify({
           chat_history_id: chatHistoryId,
           messagesToSend: messagesToSend,
