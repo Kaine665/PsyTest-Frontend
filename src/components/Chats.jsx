@@ -41,6 +41,7 @@ const Chats = () => {
   const [chats, setChats] = useState([]);
   const [patients, setPatients] = useState({});
   const [prompts, setPrompts] = useState({});
+  const [isExporting, setIsExporting] = useState(false); // 添加导出状态
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -192,26 +193,85 @@ const Chats = () => {
     }
   };
 
+  // 新增：处理导出聊天历史
+  const handleExportChatHistories = async () => {
+    try {
+      setIsExporting(true);
+      // 使用fetch发起请求，设置responseType为blob以接收二进制数据
+      const response = await fetch(
+        "https://psytest-backend.onrender.com/api/export_chat_histories",
+        {
+          method: "GET",
+          credentials: "include", // 添加此选项允许跨域请求发送Cookie
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`导出失败: ${response.status}`);
+      }
+
+      // 获取blob数据
+      const blob = await response.blob();
+
+      // 创建下载链接
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = "chat_histories.zip";
+
+      // 添加到DOM，触发下载，然后移除
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      setIsExporting(false);
+    } catch (err) {
+      console.error("[Frontend] Error exporting chat histories:", err);
+      setIsExporting(false);
+      alert("导出聊天记录失败: " + err.message);
+    }
+  };
+
   return (
     <>
       <div id="header">
         <Header title={"练习"} />
-        <button
-          className="logout-btn"
-          onClick={() => {
-            // 退出时清除 cookie
-            setCookie("account", "", -1);
-            navigate("/login");
-          }}
-          style={{
-            position: "absolute",
-            right: "1rem",
-            fontSize: "1rem",
-            padding: "5px",
-          }}
-        >
-          退出登录
-        </button>
+        <div style={{ position: "absolute", right: "1rem" }}>
+          {/* 添加导出按钮 */}
+          <button
+            className="export-btn"
+            onClick={handleExportChatHistories}
+            disabled={isExporting}
+            style={{
+              fontSize: "1rem",
+              padding: "5px",
+              marginRight: "10px",
+              backgroundColor: isExporting ? "#cccccc" : "#4caf50",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: isExporting ? "not-allowed" : "pointer",
+            }}
+          >
+            {isExporting ? "导出中..." : "导出聊天记录"}
+          </button>
+          <button
+            className="logout-btn"
+            onClick={() => {
+              // 退出时清除 cookie
+              setCookie("account", "", -1);
+              navigate("/login");
+            }}
+            style={{
+              fontSize: "1rem",
+              padding: "5px",
+            }}
+          >
+            退出登录
+          </button>
+        </div>
       </div>
 
       <div id="chatElements">
