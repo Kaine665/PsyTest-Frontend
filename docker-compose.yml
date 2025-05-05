@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: psyplatform-frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    networks:
+      - psyplatform-network
+
+networks:
+  psyplatform-network:
+    driver: bridge
